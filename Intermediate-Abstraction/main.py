@@ -1,8 +1,9 @@
 import pygame
-from gameObjects2.player import Player
-from gameObjects2.controller import Controller
-from gameObjects2.camera import Camera
-from gameObjects2.world import World
+from gameObjects.player import Player
+from gameObjects.controller import Controller
+from gameObjects.camera import Camera
+from gameObjects.world import World
+from gameObjects.planet import Planet
 
 pygame.init()
 
@@ -15,8 +16,17 @@ clock = pygame.time.Clock()
 # Game Objects
 controller = Controller()
 player = Player(0, 0, controller)
-camera = Camera(screenW, screenH)
-square = World(200, 150, 20)
+camera = Camera(screenW, screenH, mode="follow", target=player)
+world = World()
+
+world.add(camera)
+
+# Example planet (for later physics)
+earth = Planet(200, 150, radius=40, color=(0, 120, 255), mass=5000)
+
+# Register objects in the world
+world.add(player)
+world.add(earth)
 
 # Font (used for debugging and info display)
 font = pygame.font.SysFont("Arial", 20)
@@ -33,6 +43,7 @@ while running:
     dt = clock.tick(60) / (1000 / 60)
 
     # 2 Controls
+    controller.update(pygame.key.get_pressed())
 
     # 3 Physics
     # (Reserved for gravity, velocity, etc.)
@@ -48,13 +59,10 @@ while running:
 
     # 7 Draw (Paint your pixels each frame)
     screen.fill((0, 0, 0))
+    world.render(screen, camera)  # camera passed in, not owned by world
 
     # Optional: Print debug info
     message = f"PlayerX: {player.x:.2f}  PlayerY: {player.y:.2f}"
     screen.blit(font.render(message, True, (255, 255, 255)), (20, 20))
-
-    # Draw all game objects
-    player.draw(screen, screenW, screenH)
-    square.draw(screen, camera)
 
     pygame.display.flip()

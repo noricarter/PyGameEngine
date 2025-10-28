@@ -15,8 +15,8 @@ python main.py
 
 ### Windows Packaging
 ```bash
-py -m pip install pyinstaller
-py -m PyInstaller --noconsole --onefile --name EndlessRunner main.py
+python -m pip install pyinstaller
+python -m PyInstaller --noconsole --onefile --name EndlessRunner main.py
 ```
 Generated executable will be in the `dist/` folder.
 
